@@ -197,13 +197,22 @@ regForm?.addEventListener('submit', async ev => {
     await updateDoc(eventRef, {
       seats: increment(-requestedSeats)
     });
+    
 
-    // 2. Send registration row to Google Sheets
-    if (GOOGLE_SHEET_WEBHOOK_URL && GOOGLE_SHEET_WEBHOOK_URL !== "YOUR_APPS_SCRIPT_WEB_APP_URL") {
+    // 2. Send registration row to Google Sheets with response logging
+    if (GOOGLE_SHEET_WEBHOOK_URL && !GOOGLE_SHEET_WEBHOOK_URL.includes("YOUR_")) {
+      console.log("Sending booking to Google Sheets...", {
+        eventId: selectedEventForReg.id,
+        eventTitle: selectedEventForReg.title,
+        name: formData.name,
+        email: formData.email,
+        seats: requestedSeats
+      });
+
       await fetch(GOOGLE_SHEET_WEBHOOK_URL, {
         method: 'POST',
-        mode: 'no-cors', // Required for Google Apps Script webhooks
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({
           eventId: selectedEventForReg.id,
           eventTitle: selectedEventForReg.title,
@@ -212,6 +221,9 @@ regForm?.addEventListener('submit', async ev => {
           seats: requestedSeats
         })
       });
+      console.log("Google Sheets request dispatched.");
+    } else {
+      console.warn("GOOGLE_SHEET_WEBHOOK_URL is not set properly!");
     }
 
     alert(`Booking confirmed for ${requestedSeats} seat(s)!`);
@@ -225,6 +237,7 @@ regForm?.addEventListener('submit', async ev => {
     submitBtn.textContent = 'Confirm Booking';
   }
 });
+
 
 // --- Add / Edit / Delete Event ---
 function openModal() { modal.classList.remove('hidden'); }
