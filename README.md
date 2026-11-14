@@ -34,7 +34,7 @@ EventPortal.com is a responsive and user-friendly web portal built using HTML, C
 ```
 📁 EventPortal/
 │
-├── Main.html         # Main web page
+├── index.html         # Main web page
 ├── styles.css        # All styling, including animation and layout
 ├── app.js            # Logic for events, filters, modal, and animation
 └── README.md         # Project documentation

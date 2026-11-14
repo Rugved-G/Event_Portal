@@ -21,6 +21,20 @@
       <span class="slider-circle"></span>
     </label>
     <button id="toggleSidebar" class="btn">☰ Filters</button>
+    <!-- New Login/Logout Button -->
+    <button id="authBtn" class="btn">Admin Login</button>
+    <button id="btnAdd" class="btn primary hidden">+ Add Event</button>
+  </div>
+</header>
+
+<header class="topbar fixed-header">
+  <div class="brand">Event Portal</div>
+  <div class="header-actions">
+    <label class="switch">
+      <input type="checkbox" id="darkModeToggle">
+      <span class="slider-circle"></span>
+    </label>
+    <button id="toggleSidebar" class="btn">☰ Filters</button>
     <button id="btnAdd" class="btn primary">+ Add Event</button>
   </div>
 </header>
@@ -124,6 +138,6 @@
     </article>
   </template>
 
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
