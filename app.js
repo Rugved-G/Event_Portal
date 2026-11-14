@@ -7,11 +7,6 @@ import {
   getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDvjPDLJEKttc5kYUWMbh1VhJc4pZD2v1Y",
@@ -21,7 +16,6 @@ const firebaseConfig = {
   messagingSenderId: "661092896781",
   appId: "1:661092896781:web:99fadbda9ba046bd608544"
 };
-
 
 // Initialize Firebase, Firestore & Auth
 const app = initializeApp(firebaseConfig);
@@ -52,31 +46,34 @@ let currentUser = null;
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
   if (user) {
-    authBtn.textContent = 'Logout (Admin)';
-    btnAdd.classList.remove('hidden');
+    if (authBtn) authBtn.textContent = 'Logout (Admin)';
+    if (btnAdd) btnAdd.classList.remove('hidden');
   } else {
-    authBtn.textContent = 'Admin Login';
-    btnAdd.classList.add('hidden');
+    if (authBtn) authBtn.textContent = 'Admin Login';
+    if (btnAdd) btnAdd.classList.add('hidden');
   }
-  render(); // Re-render to show/hide edit/delete buttons
+  render();
 });
 
 // --- Login / Logout Handler ---
-authBtn.addEventListener('click', async () => {
-  if (currentUser) {
-    try {
-      await signOut(auth);
-    } catch (err) {
-      console.error('Logout error:', err);
+if (authBtn) {
+  authBtn.addEventListener('click', async () => {
+    if (currentUser) {
+      try {
+        await signOut(auth);
+      } catch (err) {
+        console.error('Logout error:', err);
+      }
+    } else {
+      try {
+        await signInWithPopup(auth, provider);
+      } catch (err) {
+        console.error('Login popup error:', err);
+        alert('Login failed: ' + err.message);
+      }
     }
-  } else {
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (err) {
-      console.error('Login error:', err);
-    }
-  }
-});
+  });
+}
 
 // --- Fetch Events ---
 async function fetchEvents() {
@@ -90,44 +87,49 @@ async function fetchEvents() {
     }
     render();
   } catch (err) {
-    console.error("Error loading events:", err);
+    console.error("Error loading events from Firestore:", err);
   }
 }
 
 // --- Seed Initial Data ---
 async function seedInitialData() {
-  const samples = [
-    {
-      title: 'Rock Concert',
-      type: 'Music',
-      venue: 'Stadium',
-      location: 'Mumbai',
-      age: '18+',
-      dateTime: '2026-12-10T19:00',
-      imageUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600',
-      description: 'Rock night!',
-      seats: 500
-    },
-    {
-      title: 'Football Finals',
-      type: 'Sports',
-      venue: 'Arena',
-      location: 'Delhi',
-      age: 'All',
-      dateTime: '2026-12-20T17:00',
-      imageUrl: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=600',
-      description: 'National league final.',
-      seats: 300
+  try {
+    const samples = [
+      {
+        title: 'Rock Concert',
+        type: 'Music',
+        venue: 'Stadium',
+        location: 'Mumbai',
+        age: '18+',
+        dateTime: '2026-12-10T19:00',
+        imageUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600',
+        description: 'Rock night!',
+        seats: 500
+      },
+      {
+        title: 'Football Finals',
+        type: 'Sports',
+        venue: 'Arena',
+        location: 'Delhi',
+        age: 'All',
+        dateTime: '2026-12-20T17:00',
+        imageUrl: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=600',
+        description: 'National league final.',
+        seats: 300
+      }
+    ];
+    for (const item of samples) {
+      await addDoc(eventsCol, item);
     }
-  ];
-  for (const item of samples) {
-    await addDoc(eventsCol, item);
+    fetchEvents();
+  } catch (err) {
+    console.error("Error seeding initial data:", err);
   }
-  fetchEvents();
 }
 
 // --- Render & Filter Events ---
 function render() {
+  if (!eventsGrid || !tpl) return;
   const activeTypes = [...filterTypes].filter(x => x.checked).map(x => x.value);
   const age = [...ageRadios].find(x => x.checked)?.value || 'All';
   const loc = locSelect?.value || '';
@@ -162,7 +164,6 @@ function render() {
     regBtn.target = '_blank';
     actions.appendChild(regBtn);
 
-    // Only show Edit and Delete buttons if logged in as Admin
     if (currentUser) {
       const editBtn = document.createElement('button');
       editBtn.className = 'btn';
@@ -181,7 +182,6 @@ function render() {
   });
 }
 
-// --- Helpers ---
 function googleFormLink(e) {
   return 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?usp=pp_url&entry.123='
     + encodeURIComponent(e.title);
@@ -190,38 +190,38 @@ function googleFormLink(e) {
 function openModal() { modal.classList.remove('hidden'); }
 function closeModal() { modal.classList.add('hidden'); form.reset(); editId = null; }
 
-// --- Add Event ---
-btnAdd.addEventListener('click', () => {
-  if (!currentUser) return alert('Please login as admin first!');
-  editId = null;
-  document.getElementById('modalTitle').textContent = 'Add Event';
-  openModal();
-});
+if (btnAdd) {
+  btnAdd.addEventListener('click', () => {
+    if (!currentUser) return alert('Please login as admin first!');
+    editId = null;
+    document.getElementById('modalTitle').textContent = 'Add Event';
+    openModal();
+  });
+}
 
-// --- Save Event ---
-form.addEventListener('submit', async ev => {
-  ev.preventDefault();
-  if (!currentUser) return alert('Unauthorized');
+if (form) {
+  form.addEventListener('submit', async ev => {
+    ev.preventDefault();
+    if (!currentUser) return alert('Unauthorized');
 
-  const obj = Object.fromEntries(new FormData(form).entries());
-  obj.seats = Number(obj.seats) || 0;
+    const obj = Object.fromEntries(new FormData(form).entries());
+    obj.seats = Number(obj.seats) || 0;
 
-  try {
-    if (editId) {
-      const eventRef = doc(db, "events", editId);
-      await updateDoc(eventRef, obj);
-    } else {
-      await addDoc(eventsCol, obj);
+    try {
+      if (editId) {
+        await updateDoc(doc(db, "events", editId), obj);
+      } else {
+        await addDoc(eventsCol, obj);
+      }
+      closeModal();
+      await fetchEvents();
+    } catch (err) {
+      console.error("Error saving event:", err);
     }
-    closeModal();
-    await fetchEvents();
-  } catch (err) {
-    console.error("Error saving event:", err);
-  }
-});
+  });
+}
 
-// --- Edit & Delete ---
-function editEvent(id) {
+window.editEvent = function(id) {
   if (!currentUser) return;
   const e = allEvents.find(x => x.id === id);
   if (!e) return;
@@ -231,9 +231,9 @@ function editEvent(id) {
     if (form[k]) form[k].value = e[k];
   }
   openModal();
-}
+};
 
-async function deleteEvent(id) {
+window.deleteEvent = async function(id) {
   if (!currentUser) return;
   if (!confirm('Delete this event?')) return;
   try {
@@ -242,11 +242,12 @@ async function deleteEvent(id) {
   } catch (err) {
     console.error("Error deleting event:", err);
   }
-}
+};
 
-document.getElementById('btnCancel').addEventListener('click', closeModal);
+const btnCancel = document.getElementById('btnCancel');
+if (btnCancel) btnCancel.addEventListener('click', closeModal);
 
-// --- Filters & UI Toggles ---
+// Filters
 const filterElements = [...filterTypes, ...ageRadios];
 filterElements.forEach(el => el.addEventListener('change', render));
 if (locSelect) locSelect.addEventListener('change', render);
@@ -270,7 +271,7 @@ if (darkModeToggle) {
   }
 }
 
-// --- Init ---
+// Init
 fetchEvents();
 
 window.addEventListener('load', () => {
