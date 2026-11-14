@@ -203,6 +203,40 @@ body.dark textarea {
   border: 1px solid #444;
 }
 
+.btn { 
+  padding: 6px 10px; 
+  border: none; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  transition: all 0.2s ease-in-out; /* Smooth transition for hover effects */
+}
+
+/* General hover effect for all standard buttons */
+.btn:hover {
+  opacity: 0.85;
+  transform: translateY(-1px); /* Gives a nice subtle "lift" effect */
+}
+
+/* Primary buttons hover (brightens slightly) */
+.btn.primary { 
+  background: var(--accent); 
+  color: white; 
+  text-decoration: none; 
+}
+
+.btn.primary:hover {
+  filter: brightness(1.1);
+}
+
+/* Danger buttons hover (brightens slightly) */
+.btn.danger { 
+  background: var(--danger); 
+  color: white; 
+}
+
+.btn.danger:hover {
+  filter: brightness(1.1);
+}
 
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.9); }
