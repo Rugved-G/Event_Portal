@@ -274,14 +274,26 @@ form?.addEventListener('submit', async ev => {
   }
 });
 
+// --- Open Modal for Editing ---
 function editEvent(id) {
+  console.log("Editing event with ID:", id);
   const e = allEvents.find(x => x.id === id);
-  if (!e) return;
+  if (!e) {
+    console.error("Event not found in local array for ID:", id);
+    return alert("Could not find event details to edit.");
+  }
+  
   editId = id;
   document.getElementById('modalTitle').textContent = 'Edit Event';
+  
+  // Safely populate form fields using form.elements
   for (const k in e) {
-    if (form[k]) form[k].value = e[k];
+    if (form.elements && form.elements[k]) {
+      form.elements[k].value = e[k];
+    }
   }
+  
+  // Open the modal
   openModal();
 }
 
