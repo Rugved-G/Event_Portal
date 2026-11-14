@@ -9,37 +9,9 @@
 <body>
 
   <!-- Opening Animation -->
-<div id="openingAnimation" class="opening-screen">
-  <h1 class="opening-text">EventPortal.com</h1>
-</div>
-
-<header class="topbar fixed-header">
-  <div class="brand">Event Portal</div>
-  <div class="header-actions">
-    <label class="switch">
-      <input type="checkbox" id="darkModeToggle">
-      <span class="slider-circle"></span>
-    </label>
-    <button id="toggleSidebar" class="btn">☰ Filters</button>
-    <!-- New Login/Logout Button -->
-    <button id="authBtn" class="btn">Admin Login</button>
-    <button id="btnAdd" class="btn primary hidden">+ Add Event</button>
+  <div id="openingAnimation" class="opening-screen">
+    <h1 class="opening-text">EventPortal.com</h1>
   </div>
-</header>
-
-<header class="topbar fixed-header">
-  <div class="brand">Event Portal</div>
-  <div class="header-actions">
-    <label class="switch">
-      <input type="checkbox" id="darkModeToggle">
-      <span class="slider-circle"></span>
-    </label>
-    <button id="toggleSidebar" class="btn">☰ Filters</button>
-    <button id="btnAdd" class="btn primary">+ Add Event</button>
-  </div>
-</header>
-
-
 
   <div class="layout">
     <!-- Left Navigation -->
@@ -71,11 +43,10 @@
           <option>Delhi</option>
         </select>
         <div class="filter-group">
-  <h4>Date</h4>
-  <label>From <input type="date" id="filterStartDate"></label>
-  <label>To <input type="date" id="filterEndDate"></label>
-</div>
-
+          <h4>Date</h4>
+          <label>From <input type="date" id="filterStartDate"></label>
+          <label>To <input type="date" id="filterEndDate"></label>
+        </div>
       </div>
     </aside>
 
@@ -138,6 +109,20 @@
     </article>
   </template>
 
+   <header class="topbar fixed-header">
+    <div class="brand">Event Portal</div>
+    <div class="header-actions">
+      <label class="switch">
+        <input type="checkbox" id="darkModeToggle">
+        <span class="slider-circle"></span>
+      </label>
+      <button id="toggleSidebar" class="btn">☰ Filters</button>
+      <button id="authBtn" class="btn">Admin Login</button>
+      <button id="btnAdd" class="btn primary hidden">+ Add Event</button>
+    </div>
+  </header>
+
   <script type="module" src="app.js"></script>
+  
 </body>
 </html>
