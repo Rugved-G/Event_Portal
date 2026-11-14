@@ -122,6 +122,21 @@
     </div>
   </header>
 
+  <!-- Registration Modal (Book Seats) -->
+  <div id="regModal" class="modal hidden">
+    <form id="regForm" class="modal-card">
+      <h3 id="regModalTitle">Register for Event</h3>
+      <p id="regSeatsAvailable" style="font-size: 0.9rem; color: var(--muted); margin: 0;"></p>
+      <label>Full Name <input name="name" required /></label>
+      <label>Email Address <input name="email" type="email" required /></label>
+      <label>Number of Seats <input name="seats" id="regSeatsInput" type="number" min="1" value="1" required /></label>
+      <div class="form-actions">
+        <button type="submit" id="btnConfirmReg" class="btn primary">Confirm Booking</button>
+        <button type="button" id="btnCancelReg" class="btn">Cancel</button>
+      </div>
+    </form>
+  </div>
+
   <script type="module" src="app.js"></script>
   
 </body>
